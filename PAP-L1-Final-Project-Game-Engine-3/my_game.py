@@ -1,6 +1,6 @@
 from game_funcs import *
 import game_engine as ge
-import random
+from random import choice
 
 # Flappy Fish Game Setup
 set_game_size(1600, 900)
@@ -45,17 +45,15 @@ def kelp_obstacles(i):
             place_element(kelp_mid, 700, kelp_mid_y)
             kelp_list.append(kelp_mid)
 
-
             kelp_mid2 = add_image("kelpt(3.28).png", 350)
             set_solid(kelp_mid2)
             set_collider(kelp_mid2, width=92, height=kelp_mid2.image.get_height())
             place_element(kelp_mid2, 700, 0)
-
-            animate_x(kelp_mid, 2000, -200, 1, False, 450)
-            animate_x(kelp_mid2, 2000, -200, 1, False, 450)
-            kelp_mid2.passed = False
             kelp2_list.append(kelp_mid2)
             kelp_list.append(kelp_mid2)
+            kelp_mid2.passed = False
+
+            return kelp_mid, kelp_mid2
 
         def combo2():
             kelp_big = add_image("kelpb(3.90).png", 350)
@@ -69,12 +67,10 @@ def kelp_obstacles(i):
             set_solid(kelp_small2)
             set_collider(kelp_small2, width=92, height=kelp_small2.image.get_height())
             place_element(kelp_small2, 700, 0)
-
-            animate_x(kelp_big, 2000, -200, 1, False, 450)
-            animate_x(kelp_small2, 2000, -200, 1, False, 450)
             kelp_small2.passed = False
             kelp2_list.append(kelp_small2)
             kelp_list.append(kelp_small2)
+            return kelp_big, kelp_small2
 
         def combo3():
             kelp_big2 = add_image("kelpt(3.90).png", 350)
@@ -88,14 +84,15 @@ def kelp_obstacles(i):
             set_solid(kelp_small)
             set_collider(kelp_small, width=92, height=kelp_small.image.get_height())
             place_element(kelp_small, 700, kelp_small_y)
-
-            animate_x(kelp_big2, 2000, -200, 1, False, 450)
-            animate_x(kelp_small, 2000, -200, 1, False, 450)
             kelp_small.passed = False
             kelp2_list.append(kelp_small)
             kelp_list.append(kelp_small)
 
-        random.choice([combo1, combo2, combo3])()
+            return kelp_big2, kelp_small
+
+        obstacle_1, obstacle_2 = choice([combo1, combo2, combo3])()
+        animate_x(obstacle_1, 2000, -2000, 1, False, 450)
+        animate_x(obstacle_2, 2000, -2000, 1, False, 450)
 
 # --- Score Display ---
 def update_score():
@@ -130,8 +127,8 @@ def update():
             score += 1
             update_score()
 
-    for kelps in kelp_list:
-        if flappy_fish.collide(kelps):
+    for kelp in kelp_list:
+        if flappy_fish.collide(kelp):
             print_heading("Game Over", 250)
 
 # --- Start Game ---
