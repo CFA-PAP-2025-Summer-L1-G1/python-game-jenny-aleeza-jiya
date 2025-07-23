@@ -51,8 +51,8 @@ def kelp_obstacles(i):
             set_collider(kelp_mid2, width=92, height=kelp_mid2.image.get_height())
             place_element(kelp_mid2, 700, 0)
 
-            animate_x(kelp_mid, 2000, -200, 1, False, 450)
-            animate_x(kelp_mid2, 2000, -200, 1, False, 450)
+            animate_x(kelp_mid, 2000, -2000, 1, False, 450)
+            animate_x(kelp_mid2, 2000, -2000, 1, False, 450)
             kelp_mid2.passed = False
             kelp2_list.append(kelp_mid2)
             kelp_list.append(kelp_mid2)
@@ -70,8 +70,8 @@ def kelp_obstacles(i):
             set_collider(kelp_small2, width=92, height=kelp_small2.image.get_height())
             place_element(kelp_small2, 700, 0)
 
-            animate_x(kelp_big, 2000, -200, 1, False, 450)
-            animate_x(kelp_small2, 2000, -200, 1, False, 450)
+            animate_x(kelp_big, 2000, -2000, 1, False, 450)
+            animate_x(kelp_small2, 2000, -2000, 1, False, 450)
             kelp_small2.passed = False
             kelp2_list.append(kelp_small2)
             kelp_list.append(kelp_small2)
@@ -89,8 +89,8 @@ def kelp_obstacles(i):
             set_collider(kelp_small, width=92, height=kelp_small.image.get_height())
             place_element(kelp_small, 700, kelp_small_y)
 
-            animate_x(kelp_big2, 2000, -200, 1, False, 450)
-            animate_x(kelp_small, 2000, -200, 1, False, 450)
+            animate_x(kelp_big2, 2000, -2000, 1, False, 450)
+            animate_x(kelp_small, 2000, -2000, 1, False, 450)
             kelp_small.passed = False
             kelp2_list.append(kelp_small)
             kelp_list.append(kelp_small)
@@ -107,6 +107,13 @@ def update_score():
 
 set_interval(kelp_obstacles, 2.5, range(0, 10000))
 
+# --- Game Over ---
+def gameover():
+    clear()
+    print_heading(f"Game Over", 250)
+    final_score_text = print_text(f"Final Score = {score}", 100)
+    place_element(final_score_text, 570, 530)
+
 # --- Game Loop ---
 def update():
     global ground
@@ -117,8 +124,8 @@ def update():
     # Game Over if fish hits bottom
     fish_height = flappy_fish.y + flappy_fish.image.get_height()
     if fish_height >= ge.screen_height:
-        print_heading("Game Over", 250)
-
+        gameover()
+    
     # Start game on space key
     keys = pygame.key.get_pressed()
     if keys[pygame.K_SPACE]:
@@ -132,7 +139,7 @@ def update():
 
     for kelps in kelp_list:
         if flappy_fish.collide(kelps):
-            print_heading("Game Over", 250)
+            gameover()
 
 # --- Start Game ---
 ge.start(update)
