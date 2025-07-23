@@ -190,7 +190,6 @@ class Entity(pygame.sprite.Sprite, Element):
             return self.rect.colliderect(other.rect)
         return False
 
-
     def set_x_animation(self, initial_x: int, final_x: int, turns: int, alternate: bool, speed: int, end_on_collision: bool = False):
         if not hasattr(self, "velocity"):
             self.velocity = pygame.math.Vector2()
