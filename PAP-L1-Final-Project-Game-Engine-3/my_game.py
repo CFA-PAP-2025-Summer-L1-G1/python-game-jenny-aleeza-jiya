@@ -117,7 +117,11 @@ def update():
     # Game Over if fish hits bottom
     fish_height = flappy_fish.y + flappy_fish.image.get_height()
     if fish_height >= ge.screen_height:
+        clear()
         print_heading("Game Over", 250)
+    # restart_button = print_text('''Restart?''', 100)
+    # place_element(restart_button, 500, 500)
+    # click(restart_button, remove_thing)
 
     # Start game on space key
     keys = pygame.key.get_pressed()
@@ -132,6 +136,7 @@ def update():
 
     for kelps in kelp_list:
         if flappy_fish.collide(kelps):
+            clear()
             print_heading("Game Over", 250)
 
 # --- Start Game ---
