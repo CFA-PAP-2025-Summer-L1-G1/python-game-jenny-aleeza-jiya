@@ -184,6 +184,12 @@ class Entity(pygame.sprite.Sprite, Element):
         self.rect_color = "Red"
         self.rect.x += self.col_offset[0]
         self.rect.y += self.col_offset[0]
+    
+    def collide(self, other):
+        if hasattr(self, "rect") and hasattr(other, "rect"):
+            return self.rect.colliderect(other.rect)
+        return False
+
 
     def set_x_animation(self, initial_x: int, final_x: int, turns: int, alternate: bool, speed: int, end_on_collision: bool = False):
         if not hasattr(self, "velocity"):
