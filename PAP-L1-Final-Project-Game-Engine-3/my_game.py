@@ -4,6 +4,7 @@ from random import choice
 
 # Flappy Fish Game Setup
 set_game_size(1600, 900)
+ground = ge.screen_height
 game_over = False 
 start_game = False
 score = 0
@@ -11,12 +12,11 @@ score_text = None
 kelp2_list = []
 kelp_list = []
 
+# For removing instructions
 instructions = print_text('''Press space to jump. Avoid the obstacles!''', 20)
 place_element(instructions, 20, 20)
-
 def remove_thing(target):
     remove_el(target)
-
 click(instructions, remove_thing)
 
 # Background
@@ -24,80 +24,80 @@ background_color("black")
 add_background('underwater.png', vertical_align="center", horizontal_align="center")
 bg_music = play_music("underwater.mp3")
 
-# Fish
+# Player
 flappy_fish = add_image('flappyfish.png', 130)
 set_collider(flappy_fish, width=92, height=50)
 set_solid(flappy_fish)
 place_element(flappy_fish, 400, 350)
-jump(flappy_fish, 100, 1, False)
+jump(flappy_fish, 130, 1, False)
 bind_to_screen(flappy_fish)
-
-ground = ge.screen_height
 
 # --- Obstacle Combos ---
 def kelp_obstacles(i):
     global start_game, game_over
     if start_game and not game_over:
-        def combo1():
+        def combo1(): # player must pass through middle opening
             kelp_mid = add_image("kelpb(3.28).png", 350)
             kelp_mid_y = ge.screen_height - kelp_mid.image.get_height()
             set_solid(kelp_mid)
             set_collider(kelp_mid, width=92, height=kelp_mid.image.get_height())
             place_element(kelp_mid, 700, kelp_mid_y)
-            kelp_list.append(kelp_mid)
-
+            
             kelp_mid2 = add_image("kelpt(3.28).png", 350)
             set_solid(kelp_mid2)
             set_collider(kelp_mid2, width=92, height=kelp_mid2.image.get_height())
             place_element(kelp_mid2, 700, 0)
 
-            kelp2_list.append(kelp_mid2)
             kelp_list.append(kelp_mid2)
+            kelp_list.append(kelp_mid)
+            kelp2_list.append(kelp_mid2)
             kelp_mid2.passed = False
 
             return kelp_mid, kelp_mid2
 
-        def combo2():
+        def combo2(): # player must pass through the top opening
             kelp_big = add_image("kelpb(3.90).png", 350)
             kelp_big_y = ge.screen_height - kelp_big.image.get_height()
             set_solid(kelp_big)
             set_collider(kelp_big, width=92, height=kelp_big.image.get_height())
             place_element(kelp_big, 700, kelp_big_y)
-            kelp_list.append(kelp_big)
 
             kelp_small2 = add_image("kelpt(1.90).png", 350)
             set_solid(kelp_small2)
             set_collider(kelp_small2, width=92, height=kelp_small2.image.get_height())
             place_element(kelp_small2, 700, 0)
 
-            kelp_small2.passed = False
-            kelp2_list.append(kelp_small2)
             kelp_list.append(kelp_small2)
-            
+            kelp_list.append(kelp_big)
+            kelp2_list.append(kelp_small2)
+            kelp_small2.passed = False
+
             return kelp_big, kelp_small2
 
-        def combo3():
+        def combo3(): # player must pass through the bottom opening
             kelp_big2 = add_image("kelpt(3.90).png", 350)
             set_solid(kelp_big2)
             set_collider(kelp_big2, width=92, height=kelp_big2.image.get_height())
             place_element(kelp_big2, 700, 0)
-            kelp_list.append(kelp_big2)
-
+          
             kelp_small = add_image("kelpb(1.90).png", 350)
             kelp_small_y = ge.screen_height - kelp_small.image.get_height()
             set_solid(kelp_small)
             set_collider(kelp_small, width=92, height=kelp_small.image.get_height())
             place_element(kelp_small, 700, kelp_small_y)
             
-            kelp_small.passed = False
-            kelp2_list.append(kelp_small)
             kelp_list.append(kelp_small)
+            kelp_list.append(kelp_big2)
+            kelp2_list.append(kelp_small)
+            kelp_small.passed = False
 
             return kelp_big2, kelp_small
 
         obstacle_1, obstacle_2 = choice([combo1, combo2, combo3])()
         animate_x(obstacle_1, 2000, -2000, 1, False, 450)
         animate_x(obstacle_2, 2000, -2000, 1, False, 450)
+
+set_interval(kelp_obstacles, 2.5, range(0, 10000))
 
 # --- Score Display ---
 def update_score():
@@ -106,8 +106,6 @@ def update_score():
         remove_el(score_text)
     score_text = print_text(f'Score = {score}', 20)
     place_element(score_text, 40, 40)
-
-set_interval(kelp_obstacles, 2.5, range(0, 10000))
 
 # --- Game Over ---
 def gameover():
@@ -136,10 +134,7 @@ def restart_game():
 
 # --- Game Loop ---
 def update():
-    global ground
-    global start_game
-    global score
-    global flappy_fish
+    global ground, start_game, score, flappy_fish
 
     # Game Over if fish hits bottom
     fish_height = flappy_fish.y + flappy_fish.image.get_height()
@@ -157,7 +152,7 @@ def update():
             set_collider(flappy_fish, width=92, height=50)
             set_solid(flappy_fish)
             place_element(flappy_fish, 400, 350)
-            jump(flappy_fish, 100, 1, False)
+            jump(flappy_fish, 130, 1, False)
             bind_to_screen(flappy_fish)
         else:
             start_game = True
@@ -175,5 +170,3 @@ def update():
 
 # --- Start Game ---
 ge.start(update)
-
-
