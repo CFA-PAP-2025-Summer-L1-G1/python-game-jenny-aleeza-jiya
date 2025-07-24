@@ -118,6 +118,8 @@ def gameover():
         print_heading(f"Game Over", 250)
         final_score_text = print_text(f"Final Score = {score}", 100)
         place_element(final_score_text, 570, 530)
+        start_over_text = print_text("Press the space bar to try again", 80)
+        place_element(start_over_text, 390, 720)
 
 # --- Restart ---
 def restart_game():
