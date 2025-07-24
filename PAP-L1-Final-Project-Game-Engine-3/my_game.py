@@ -2,6 +2,14 @@ from game_funcs import *
 import game_engine as ge
 from random import choice
 
+# **** Contributors ****
+# lines 14-41: Jenny (basic game setup)
+# lines 44-108: Jenny, Jiya (obstacle randomization, collision detetction)
+# lines 111-116: Jiya (score counter)
+# lines 119-128: Aleeza (game over screen)
+# lines 131-152: Jiya (restart game logic)
+# lines 155-178; Jenny, Jiya (space to start, space to restart)
+
 # Flappy Fish Game Setup
 set_game_size(1600, 900)
 ground = ge.screen_height
