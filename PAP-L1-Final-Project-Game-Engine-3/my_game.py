@@ -4,6 +4,7 @@ from random import choice
 
 # Flappy Fish Game Setup
 set_game_size(1600, 900)
+game_over = False 
 start_game = False
 score = 0
 score_text = None
@@ -35,8 +36,8 @@ ground = ge.screen_height
 
 # --- Obstacle Combos ---
 def kelp_obstacles(i):
-    global start_game
-    if start_game:
+    global start_game, game_over
+    if start_game and not game_over:
         def combo1():
             kelp_mid = add_image("kelpb(3.28).png", 350)
             kelp_mid_y = ge.screen_height - kelp_mid.image.get_height()
@@ -101,7 +102,7 @@ def kelp_obstacles(i):
 # --- Score Display ---
 def update_score():
     global score_text
-    if score_text:
+    if score_text in ge.elements:
         remove_el(score_text)
     score_text = print_text(f'Score = {score}', 20)
     place_element(score_text, 40, 40)
@@ -110,27 +111,56 @@ set_interval(kelp_obstacles, 2.5, range(0, 10000))
 
 # --- Game Over ---
 def gameover():
-    clear()
-    print_heading(f"Game Over", 250)
-    final_score_text = print_text(f"Final Score = {score}", 100)
-    place_element(final_score_text, 570, 530)
+    global game_over
+    if not game_over:
+        game_over = True
+        clear()
+        print_heading(f"Game Over", 250)
+        final_score_text = print_text(f"Final Score = {score}", 100)
+        place_element(final_score_text, 570, 530)
+
+# --- Restart ---
+def restart_game():
+    clear() 
+    global score, kelp2_list, kelp_list, game_over, start_game, score_text
+
+    kelp_list.clear()
+    kelp2_list.clear()
+    score = 0 
+    game_over = False
+    start_game = True
+
+    if score_text in ge.elements:
+        remove_el(score_text)
+    update_score()
 
 # --- Game Loop ---
 def update():
     global ground
     global start_game
     global score
-    flappy_fish.x = 400
+    global flappy_fish
 
     # Game Over if fish hits bottom
     fish_height = flappy_fish.y + flappy_fish.image.get_height()
-    if fish_height >= ge.screen_height:
+    if fish_height >= ge.screen_height and not game_over:
         gameover()
  
-    # Start game on space key
+    # Start game on space key or restart game on space key when game over
     keys = pygame.key.get_pressed()
     if keys[pygame.K_SPACE]:
-        start_game = True
+        if game_over:
+            clear()
+            restart_game()
+
+            flappy_fish = add_image('flappyfish.png', 130)
+            set_collider(flappy_fish, width=92, height=50)
+            set_solid(flappy_fish)
+            place_element(flappy_fish, 400, 350)
+            jump(flappy_fish, 100, 1, False)
+            bind_to_screen(flappy_fish)
+        else:
+            start_game = True
 
     for kelp in kelp2_list:
         if not kelp.passed and kelp.x < flappy_fish.x:
@@ -139,8 +169,11 @@ def update():
             update_score()
 
     for kelps in kelp_list:
-        if flappy_fish.collide(kelps):
+        if flappy_fish.collide(kelps) and not game_over:
             gameover()
+    # Restart game when space pressed 
 
 # --- Start Game ---
 ge.start(update)
+
+
